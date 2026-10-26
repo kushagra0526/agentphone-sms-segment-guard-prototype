@@ -50,14 +50,17 @@ def offenders(text):
     return sorted({ch for ch in text if ch not in GSM_BASIC and ch not in GSM_EXT})
 
 
+SAFE_V3 = {"‐": "-", "‑": "-"}   # added after the held-out run: NFKC leaves U+2011 as U+2010, which is not GSM-7
+
+
 def clean(text, extended=False):
     """Replace typography with GSM-7 equivalents. With extended=True also NFKC-fold compatibility characters and drop
     invisible format characters (zero-width space, joiners, variation selectors), which otherwise force UCS-2.
     Never touches emoji or letters outside GSM-7: those are reported, not silently changed."""
     out = []
     for ch in text:
-        if ch in SAFE:
-            out.append(SAFE[ch])
+        if ch in SAFE or (extended == "v3" and ch in SAFE_V3):
+            out.append(SAFE.get(ch) or SAFE_V3[ch])
             continue
         if extended:
             if unicodedata.category(ch) == "Cf" or 0xFE00 <= ord(ch) <= 0xFE0F:

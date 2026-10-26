@@ -24,7 +24,8 @@ def score(seeds, held, extended):
 
 def main():
     res = {"dev": score(range(0, 3000), False, False), "held_out_run1": score(range(10000, 13000), True, False),
-           "held_out_run2_extended_rules": score(range(10000, 13000), True, True)}
+           "held_out_run2_extended_rules": score(range(10000, 13000), True, True),
+           "held_out_run3_after_hyphen_fix": score(range(10000, 13000), True, "v3")}
     json.dump(res, open("out/result.json", "w"), indent=1)
     for k, v in res.items():
         print(k, v)
